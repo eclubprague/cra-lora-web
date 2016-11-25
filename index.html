@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CRA Hackaton</title>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--<link rel="stylesheet" type="text/css" href="style.css">-->
+<style type="text/css">
+	    table.tableSection {
+        display: table;
+        width: 100%;
+    }
+    table.tableSection thead, table.tableSection tbody {
+        float: left;
+        width: 100%;
+    }
+    table.tableSection tbody {
+        overflow: auto;
+        height: 400px;
+    }
+    table.tableSection tr {
+        width: 100%;
+        display: table;
+        text-align: left;
+    }
+    table.tableSection th, table.tableSection td {
+        width: 33%;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>CRA Hackaton: Remote laptop monitoring</h1>
+		</div>
+	</div>
+	<div class="row margin-top">
+		<div class="col-md-6">
+		<h2>Uptime: <span id="uptime"></span></h2>
+		<h2>Processes:</h2>
+			<table class="table table-striped tableSection">
+    <thead>
+      <tr>
+        <th>Process name</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+    </tbody>
+  </table>
+		</div>
+		<div class="col-md-6">
+		<h2>Approximate position: <span id="latlat"></span> <span id="lonlon"></span></h2>
+		<div id="map" style="width:100%;height:350px;"></div>
+		</div>
+	</div>
+</div>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+  <!-- BOOTSTRAP + jQUERY -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAM6lpIA62HmEAU5r-wFYa7tnDFj87G50I&libraries=places"></script>
+
+<script type="text/javascript">
+var constGPSData = {"29000050":{"lon":15.813389,"id":"29000050","lat":50.214279},"29000052":{"lon":14.492449,"id":"29000052","lat":49.986206},"290000CC":{"lon":14.498234,"id":"290000CC","lat":50.077965},"29000055":{"lon":14.003811,"id":"29000055","lat":50.675648},"290000CB":{"lon":14.968986,"id":"290000CB","lat":50.386631},"080500F0":{"lon":18.21447,"id":"080500F0","lat":49.861053},"29000034":{"lon":14.402790,"id":"29000034","lat":50.066344},"290000CD":{"lon":14.922946,"id":"290000CD","lat":50.444145},"29000056":{"lon":12.886866,"id":"29000056","lat":50.227375},"29000037":{"lon":14.037532,"id":"29000037","lat":50.644169},"29000036":{"lon":14.416851,"id":"29000036","lat":50.099449},"29000039":{"lon":13.352298,"id":"29000039","lat":49.774727},"0804003C":{"lon":14.451003,"id":"0804003C","lat":50.081062},"080500AD":{"lon":18.265755,"id":"080500AD","lat":49.831135},"290000F2":{"lon":14.451173,"id":"290000F2","lat":50.080982},"290000D0":{"lon":14.067673,"id":"290000D0","lat":50.648605},"2900003A":{"lon":13.378323,"id":"2900003A","lat":49.741123},"290000F3":{"lon":14.502611,"id":"290000F3","lat":50.027206},"290000D1":{"lon":17.277494,"id":"290000D1","lat":49.590786},"290000F6":{"lon":14.552968,"id":"290000F6","lat":50.043018},"290000F5":{"lon":14.375863,"id":"290000F5","lat":50.079857},"290000D6":{"lon":14.40769,"id":"290000D6","lat":50.075691},"290000D5":{"lon":15.767892,"id":"290000D5","lat":50.039333},"290000F7":{"lon":15.053699,"id":"290000F7","lat":50.763283},"290000D8":{"lon":15.211493,"id":"290000D8","lat":50.02195},"080500A9":{"lon":16.579628,"id":"080500A9","lat":49.19878},"290000D9":{"lon":16.570633,"id":"290000D9","lat":49.175968},"290000B9":{"lon":16.635006,"id":"290000B9","lat":49.215698},"290000DC":{"lon":14.473326,"id":"290000DC","lat":50.057487},"290000BC":{"lon":14.613569,"id":"290000BC","lat":50.102085},"290000DE":{"lon":16.674614,"id":"290000DE","lat":49.222656},"29000048":{"lon":0,"id":"29000048","lat":0},"0804004B":{"lon":14.490879,"id":"0804004B","lat":48.988628},"29000049":{"lon":14.501364,"id":"29000049","lat":50.120075},"080500BA":{"lon":18.168243,"id":"080500BA","lat":49.832108},"080602B0":{"lon":0,"id":"080602B0","lat":0},"290000E0":{"lon":14.481349,"id":"290000E0","lat":48.999043},"290000C0":{"lon":0,"id":"290000C0","lat":0},"2900004D":{"lon":14.355786,"id":"2900004D","lat":50.05127},"290000E4":{"lon":15.077041,"id":"290000E4","lat":50.755474},"2900004F":{"lon":17.235708,"id":"2900004F","lat":49.59063},"2900004E":{"lon":14.497209,"id":"2900004E","lat":49.98378},"2900000D":{"lon":15.578606,"id":"2900000D","lat":49.434116},"2900000E":{"lon":14.45027,"id":"2900000E","lat":50.017246},"290000A6":{"lon":17.646503,"id":"290000A6","lat":49.208405},"08040024":{"lon":14.343408,"id":"08040024","lat":50.101631},"290000A8":{"lon":14.418324,"id":"290000A8","lat":50.010956}};
+var latitude = 50.066344;
+var longitude = 14.402790;
+var map;
+var service;
+var infowindow;
+function initialize() {
+  var myPosition = new google.maps.LatLng(latitude,longitude);
+  infowindow = new google.maps.InfoWindow();
+  map = new google.maps.Map(document.getElementById('map'), {
+      center: myPosition,
+      zoom: 12
+    });
+  var request = {
+    location: myPosition,
+    radius: '500',
+    types: ['bar', 'restaurant']
+  };
+  //service = new google.maps.places.PlacesService(map);
+  //service.nearbySearch(request, callback);
+  createMarker(latitude, longitude);
+  updatePosition(latitude, longitude);
+}
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      var place = results[i];
+      createMarker(results[i]);
+    }
+  }
+}
+var cityCircles = [];
+function createMarker(lat, lon) {
+	/*var marker = new google.maps.Marker({
+	  map: map,
+	  position: {"lat": lat, "lng": lon}
+	});
+	google.maps.event.addListener(marker, 'click', function() {
+	  infowindow.setContent("<strong>"+place.name+"</strong><br>"+place.vicinity)
+	  infowindow.open(map, this);
+	});*/
+
+}
+
+function updatePosition(lat, lon) {
+	$('#latlat').html(lat);
+	$('#lonlon').html(lon);
+
+}
+initialize();
+</script>
+
+<script type="text/javascript">
+	function getDataFromAPI() {
+    $.ajax({
+      type: 'GET',
+        url: 'https://api.pripoj.me/message/get/0004A30B001A66D6?token=84YTv1eXGqfwcZikLYkqWzR4aoMAyqDZ&limit=100',
+        dataType: 'json',
+    success: function(data, status, jqXHR) {
+        dataCallback(data);
+    },
+    error: function(jqXHR, status, error) {
+      console.log(error);
+    }
+});
+}
+
+getDataFromAPI();
+setInterval(function() {
+	getDataFromAPI();
+}, 30*1000);
+
+function dataCallback(data) {
+	var records = data.records;
+	var allMessages = [];
+	var found = false;
+	var positions = [];
+	for(var i = 0; i < records.length; i++) {
+		if(!found) {
+			var message = fromHex(records[i].payloadHex);
+			var mc = message.substring(0, 2);
+			var mn = message.substring(2, 4);
+				if(parseInt(mc) == parseInt(mn)+1) {
+					allMessages = [];
+					positions  = [];
+					allMessages.push(message.substring(4));
+					positions.push(records[i].lrrs);
+					var ccount = mn;
+					for(var j = 1; j < mc; j++) {
+						ccount=mn-j;
+						var subMessage = fromHex(records[i+j].payloadHex);
+						var mnN = parseInt(subMessage.substring(2, 4));
+						if(mnN == ccount) {
+							allMessages.push(subMessage.substring(4));
+						}
+					}
+					if(allMessages.length == mc) {
+						var tokens = [];
+						var messss = "";
+						for(var k = 7; k >= 0; k--) {
+							messss+=allMessages[k];
+						}
+						displayData(messss.split(";"));
+						drawOnMap(positions);
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+function drawOnMap(data) {
+	console.log(data);
+	if(cityCircles.length > 0) {
+		cityCircles.forEach(function(circle) {
+			circle.setMap(null);
+		})
+		cityCircles = [];
+	}
+	data[0].forEach(function(obj) {
+		var lid = obj.Lrrid;
+		var lrssi = obj.LrrRSSI;
+		var radius = calculateDistance(lrssi);
+		console.log(lid);
+		var loc = constGPSData[lid];
+		console.log("LOC: "+loc);
+		if(loc.lat != 0 && loc.lon != 0)
+			drawCircle(loc.lon, loc.lat, radius);
+	});
+}
+
+function drawCircle(lon, lat, rad) {
+	var cityCircle = new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: {"lat": lat, "lng": lon},
+        radius: (rad*1000)+50
+      });
+	cityCircles.push(cityCircle)
+}
+
+function calculateDistance(rssi) {
+  
+  var txPower = -80 //hard coded power value. Usually ranges between -59 to -65
+  
+  if (rssi == 0) {
+    return -1.0; 
+  }
+
+  var ratio = rssi*1.0/txPower;
+  if (ratio < 1.0) {
+    return Math.pow(ratio,10);
+  }
+  else {
+    var distance =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;    
+    return distance;
+  }
+}
+
+function displayData(data) {
+      $('#tbody').html();
+      var index = 0;
+      data.forEach(function(process) {
+      	if(process !== "") {
+      		if(index != 0) {
+	      		var tr = $('<tr/>');
+	      		var td = $('<td/>');
+	      		td.html(process);
+	      		tr.append(td);
+	      		$("#tbody").append(tr);
+      		}else {
+      			$('#uptime').html(process+"00 min.")
+      		}
+      		index++;
+      	}
+      });
+}
+
+function fromHex(hex,str){
+  try{
+    str = decodeURIComponent(hex.replace(/(..)/g,'%$1'))
+  }
+  catch(e){
+    str = hex
+    console.log('invalid hex input: ' + hex)
+  }
+  return str
+}
+</script>
+</body>
+</html>
